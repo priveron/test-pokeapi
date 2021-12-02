@@ -44,8 +44,21 @@ button {
 .pokemon-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 30px 30px;
 }
 
 .pokemon {
+  display: flex;
+  justify-content: space-around;
   border: 1px solid black;
+  padding: 10px;
+  margin: 50px 100px 0px 100px;
+}
+.pokemon > h1 {
+  align-self: flex-start;
+  font-size: 1.4rem;
+}
+
+.pokemon > img {
+  background-color: darkseagreen;
 }
