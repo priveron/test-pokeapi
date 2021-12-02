@@ -11,26 +11,20 @@ function App() {
   const [pokemons, setPokemons] = useState<Pokemon[] | []>([])
 
   useEffect(() => {
-    axios
-    .get("https://pokeapi.co/api/v2/pokemon?limit=9")
-    .then((APIResponse) => {
-      // console.log(APIResponse)
-      const pokemonsList = APIResponse.data.results
-      const promises = pokemonsList.map((pokemon: {name: string, url: string}) => {
-        return axios.get(pokemon.url).then((res) => res.data)
-      })
-      Promise.all(promises).then((data) => {
-        // console.log(data)
-        const pkmList = data.map(({name, sprites}: any) => ({name, img: sprites.front_default}))
-        // console.log(pkmList);
-        
-        setPokemons(pkmList);
-      })
-    })
-    .catch((error) => {
-      console.error(error);
-    })
-  }, [])
+    (async () => {
+      try {
+      const APIResponse = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=9")
+      const pokemonAPIResults = APIResponse.data.results
+      const pokemonArray: Pokemon[] = await Promise.all(pokemonAPIResults.map(async (pokemon: {name: string, url: string}) => {
+        const pokemonResponse = await axios.get(pokemon.url)
+        return {name: pokemonResponse.data.name, img: pokemonResponse.data.sprites.front_default}
+      })) // Can replace Promise.all and add another state isLoaded to update pokemon independently on page
+      setPokemons(pokemonArray);
+    } catch (err) {
+      console.error(err);
+    }
+  })(), []}
+  )
 
   return (
     <div className="App">
